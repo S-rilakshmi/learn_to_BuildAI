@@ -248,6 +248,16 @@
     margin-bottom: 12px;
 }
 
+
+/* Sits inside .result-file and under the verdict - smaller than both, so the
+   score stays the loudest thing in the card. */
+
+.engine-note {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
+}
+
 .count {
     color: var(--muted);
     font-weight: 500;

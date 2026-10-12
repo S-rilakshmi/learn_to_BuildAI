@@ -17,9 +17,10 @@ import { notFound, errorHandler } from './middleware/error.js'
 
 const app = express()
 
-// CLIENT_ORIGIN must be the deployed frontend URL in production, or the
-// browser blocks the upload at the preflight. Set it in Vercel's project
-// settings; it falls back to the Vite dev server for local work.
+// CLIENT_ORIGIN is a list of allowed origins (see config/env.js). In the
+// services setup the frontend is served from this same domain, so nothing
+// cross-origin needs listing in production; it matters only for local work
+// from the Vite dev server.
 app.use(cors({ origin: CLIENT_ORIGIN }))
 app.use(express.json())
 

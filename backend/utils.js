@@ -33,6 +33,15 @@ export function escapeRegex(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
+// Read a number out of the environment, falling back to `fallback` and staying
+// within [min, max]. Without the clamp a typo in .env could set the labd request
+// timeout to an hour, or a negative one that aborts every request instantly.
+export function clampInt(raw, fallback, min, max) {
+    const n = Number.parseInt(raw, 10)
+    if (Number.isNaN(n)) return fallback
+    return Math.min(max, Math.max(min, n))
+}
+
 // Human-readable size for error messages, e.g. 5242880 -> "5 MB".
 export function formatBytes(bytes) {
     return `${Math.round(bytes / 1024 / 1024)} MB`
