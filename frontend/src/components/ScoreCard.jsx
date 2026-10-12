@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 // The ring's circumference: r = 52 in the SVG, so 2·π·r ≈ 326.7
 const RING_LENGTH = 2 * Math.PI * 52
 
-export default function ScoreCard({ result: { score, present, missing, fileName } }) {
+export default function ScoreCard({ result: { score, verdict, present = [], missing = [], fileName, engine, percentLeft } }) {
   const [shownScore, setShownScore] = useState(0)
   const [filled, setFilled] = useState(false)
 
@@ -53,11 +53,13 @@ export default function ScoreCard({ result: { score, present, missing, fileName 
         </div>
         <div className="result-summary">
           <h2>Resume score</h2>
-          <p className="result-file">{fileName} · keyword analysis</p>
-          <p className="verdict">{text}</p>
-          <p className="demo-note">
-            Scored by matching the keywords in your job description against the text of your resume.
-          </p>
+          <p className="result-file">{fileName} · <EngineNote engine={engine} /></p>
+          {/* labd writes the verdict; the keyword engine has none, so the ring's
+              own band text stands in for it. */}
+          <p className="verdict">{verdict || text}</p>
+          {typeof percentLeft === 'number' && (
+            <p className="engine-note">labd allowance: {percentLeft}% left</p>
+          )}
         </div>
       </div>
 
@@ -67,6 +69,14 @@ export default function ScoreCard({ result: { score, present, missing, fileName 
       </div>
     </div>
   )
+}
+
+// Which engine produced this result matters to whoever is reading the score: a
+// labd read of the resume and a keyword word-match are not the same evidence.
+function EngineNote({ engine }) {
+  return engine === 'labd'
+    ? <span className="engine-note">reviewed by labd</span>
+    : <span className="engine-note">keyword match</span>
 }
 
 function SkillsColumn({ title, skills, kind }) {
@@ -85,7 +95,7 @@ function SkillsColumn({ title, skills, kind }) {
 }
 
 function scoreBand(score) {
-  if (score >= 80) return { color: '#16a34a', text: 'Strong match — most of the skills this screen looks for are on the page.' }
+  if (score >= 80) return { color: '#16a34a', text: 'Strong match — most of what this role asks for is on the page.' }
   if (score >= 65) return { color: '#d97706', text: 'Good base — a couple of key skills are missing or not visible.' }
   return { color: '#dc2626', text: 'Weak match — several core skills are missing. Worth adding projects that use them.' }
 }
