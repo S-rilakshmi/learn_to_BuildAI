@@ -1,10 +1,12 @@
 import express from 'express'
+import mongoose from 'mongoose'
 import cors from 'cors'
 
 import { CLIENT_ORIGIN } from './config/env.js'
 import { connectDb } from './config/db.js'
 import analyzeRoutes from './routes/analyze.js'
 import { notFound, errorHandler } from './middleware/error.js'
+import { httpError } from './utils.js'
 
 // The Express app, built and exported but NOT listening. Keeping this separate
 // from server.js is what lets the same app run in two places:
@@ -36,11 +38,27 @@ app.use('/api', async(_req, _res, next) => {
         await connectDb()
         next()
     } catch (err) {
-        next(err)
+        // A Mongoose connection error carries no HTTP status, so left alone it
+        // reaches the catch-all in middleware/error.js and reports the vague
+        // "Something went wrong while analysing the resume." - which reads like a
+        // bug in the analysis when it is really the database. Giving it a status
+        // and a specific message makes a deployment problem diagnosable.
+        //
+        // Deliberately NOT echoing err.message to the client: mongodb driver
+        // errors can include the connection string, and that holds the password.
+        // The detail goes to the log line instead, which only the operator sees.
+        console.error('[db] connection failed:', err.message)
+        next(httpError(503, 'Could not reach the database. Check MONGODB_URI in the deployment settings, and that Atlas allows connections from Vercel.'))
     }
 })
 
-app.get('/api/health', (_req, res) => res.json({ ok: true }))
+// Health check: reports whether Mongo is actually reachable. When every request
+// fails with a 5xx, this is the first thing to look at - dbState 1 means
+// connected, anything else means the database is the problem, not the analysis.
+app.get('/api/health', (_req, res) => {
+    const state = mongoose.connection.readyState
+    res.json({ ok: true, db: state === 1 ? 'connected' : 'not connected', dbState: state })
+})
 
 app.use('/api', analyzeRoutes)
 
