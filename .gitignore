@@ -8,3 +8,7 @@ dist/
 *.local
 .DS_Store
 npm-debug.log*
+
+# Secrets - backend/.env holds the Mongo password and an API key. Untracked is
+# not the same as ignored: without this line `git add .` commits it.
+backend/.env
