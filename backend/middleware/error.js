@@ -8,14 +8,19 @@ export function notFound(req, res) {
 
 // Four arguments, so Express treats this as the error handler rather than
 // ordinary middleware.
+//
+// Note: this file deliberately avoids optional chaining (`err?.code`). A formatter
+// or save hook in this project has been inserting a space into `?.`, turning it
+// into the syntax error `? .`, which stops the whole server from parsing. Explicit
+// truthiness checks do the same job and cannot be mangled.
 export function errorHandler(err, _req, res, _next) {
     // Multer's file-size limit arrives as an error, not a response.
-    if (err ? .code === 'LIMIT_FILE_SIZE') {
+    if (err && err.code === 'LIMIT_FILE_SIZE') {
         return res.status(413).json({ error: `That PDF is larger than ${formatBytes(MAX_UPLOAD_BYTES)}.` })
     }
 
     // A service signalling an expected failure - see httpError in utils.js.
-    if (err ? .status) {
+    if (err && err.status) {
         return res.status(err.status).json({ error: err.message })
     }
 

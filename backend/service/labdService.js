@@ -1,6 +1,6 @@
 import { LABD_API_KEY, LABD_API_URL, LABD_TIMEOUT_MS } from '../config/env.js'
 import { httpError } from '../utils.js'
-import { parseReview, statusFor, messageFor, numberOrNull } from '../lib/labdResponse.js'
+import { parseReview, statusFor, messageFor, readContent, readPercentLeft } from '../lib/labdResponse.js'
 
 // ============================================================
 // The one place in the backend that talks to labd.
@@ -19,6 +19,10 @@ import { parseReview, statusFor, messageFor, numberOrNull } from '../lib/labdRes
 //
 // Parsing the reply and mapping labd's statuses lives in lib/labdResponse.js,
 // which is pure code and therefore testable without a network or a server.
+//
+// Note: no optional chaining (`?.`) in this file. A save hook in this project has
+// been inserting a space into `?.`, producing the syntax error `? .`, so plain
+// truthiness checks are used throughout.
 // ============================================================
 
 // How the answer must come back. Asking for a strict shape is cheaper and more
@@ -69,17 +73,17 @@ export async function reviewResume({ resumeText, jobDescription }) {
 
     // The API answers once, in JSON: message.content is the reply and
     // credits.percentLeft is what is left of the allowance.
-    const raw = data ? .message ? .content
-    if (typeof raw !== 'string' || !raw.trim()) {
+    const raw = readContent(data)
+    if (!raw.trim()) {
         throw httpError(502, 'labd answered without any content. Try again in a moment.')
     }
 
     const parsed = parseReview(raw)
     if (!parsed) {
-        throw httpError(502, 'labd’s answer was not in the shape the app expects. Try again.')
+        throw httpError(502, 'labd\u2019s answer was not in the shape the app expects. Try again.')
     }
 
-    return {...parsed, percentLeft: numberOrNull(data ? .credits ? .percentLeft) }
+    return {...parsed, percentLeft: readPercentLeft(data) }
 }
 
 // The HTTP call itself, kept separate so reviewResume() is only about meaning.
@@ -104,12 +108,13 @@ async function callLabd(body) {
             signal: AbortSignal.timeout(LABD_TIMEOUT_MS),
         })
     } catch (err) {
-        const timedOut = err ? .name === 'TimeoutError' || err ? .name === 'AbortError'
+        const name = err && err.name
+        const timedOut = name === 'TimeoutError' || name === 'AbortError'
         throw httpError(
             timedOut ? 504 : 502,
             timedOut ?
             'labd took too long to answer. Try again, or with a shorter job description.' :
-            'Could not reach labd. Check the server’s network and try again.',
+            'Could not reach labd. Check the server\u2019s network and try again.',
         )
     }
 

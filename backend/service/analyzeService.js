@@ -19,6 +19,8 @@ import { Analysis } from '../models/Analysis.js'
 // slow, out of allowance, no key configured - so a failure falls back to the
 // keyword engine rather than turning into an error the learner cannot act on.
 // `engine` on the response says which one produced the numbers on screen.
+//
+// Note: no optional chaining (`?.`) in this file - see middleware/error.js for why.
 
 export async function analyzeResume({ file, jobDescription }) {
     if (!file) {
@@ -89,7 +91,8 @@ async function scoreWithLabdOrFallback({ resumeText, jobDescription }) {
 }
 
 function isFallbackWorthy(err) {
-    return err ? .status === 429 || (err ? .status >= 500 && err.status < 600)
+    if (!err || typeof err.status !== 'number') return false
+    return err.status === 429 || (err.status >= 500 && err.status < 600)
 }
 
 function scoreWithKeywords(resumeText, jobDescription) {

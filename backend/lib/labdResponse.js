@@ -6,6 +6,10 @@
 // integration most likely to break (a model does not always return exactly the
 // JSON it was asked for), so it is the part worth being able to test on its own.
 // See test/labdResponse.test.js.
+//
+// Note: this file deliberately avoids optional chaining (`x?.y`). A save hook in
+// this project has been inserting a space into `?.`, turning it into the syntax
+// error `? .`. Explicit truthiness checks do the same job and are safe.
 // ============================================================
 
 // labd's own statuses, mapped to the status this app answers with.
@@ -38,10 +42,13 @@ export function messageFor(status, data) {
         case 429:
             return 'Too many labd requests this minute. Wait a moment and try again.'
         default:
-            // Prefer labd's own words when it sent any.
-            return typeof data ? .error === 'string' && data.error ?
-                `labd could not handle that: ${data.error}` :
-                `labd answered ${status}. Try again in a moment.`
+            {
+                // Prefer labd's own words when it sent any.
+                const detail = data && typeof data.error === 'string' ? data.error : ''
+                return detail ?
+                    `labd could not handle that: ${detail}` :
+                    `labd answered ${status}. Try again in a moment.`
+            }
     }
 }
 
@@ -53,7 +60,7 @@ export function messageFor(status, data) {
 // whole string first, then the first {...} block inside it, and return null if
 // neither is usable.
 export function parseReview(raw) {
-    const text = String(raw ? ? '').trim()
+    const text = String(raw === undefined || raw === null ? '' : raw).trim()
     if (!text) return null
 
     const candidates = [text]
@@ -98,6 +105,23 @@ export function sanitise(value) {
 export function numberOrNull(value) {
     const n = Number(value)
     return Number.isFinite(n) ? n : null
+}
+
+// labd answers in JSON: { message: { content }, credits: { percentLeft } }.
+// Pulling the fields out here - with explicit checks rather than `?.` - keeps the
+// service free of the shape question and gives both readers one place to look.
+export function readContent(data) {
+    if (!data || typeof data !== 'object') return ''
+    const message = data.message
+    if (!message || typeof message !== 'object') return ''
+    return typeof message.content === 'string' ? message.content : ''
+}
+
+export function readPercentLeft(data) {
+    if (!data || typeof data !== 'object') return null
+    const credits = data.credits
+    if (!credits || typeof credits !== 'object') return null
+    return numberOrNull(credits.percentLeft)
 }
 
 function toStringList(value) {

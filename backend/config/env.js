@@ -8,6 +8,10 @@ import { clampInt } from '../utils.js'
 //
 // The key is MONGODB_URI (not MONGO_URI) - it must match backend/.env exactly,
 // or it arrives as undefined and the server refuses to boot.
+//
+// Note: no numeric separators (12_000) in this file. Something in the save path
+// has been inserting a space into them, producing `12 _000`, which is a syntax
+// error. Plain digits are used instead.
 
 export const PORT = process.env.PORT || 4000
 export const MONGO_URI = process.env.MONGODB_URI
@@ -38,10 +42,10 @@ export const LABD_API_URL = process.env.LABD_API_URL || 'https://agent.thedevlab
 // How long to wait on labd before giving up. A serverless function is killed at
 // roughly 10s by default on Vercel's free tier, so a request that hangs has to
 // be cut short here, where we can still answer with something useful.
-export const LABD_TIMEOUT_MS = clampInt(process.env.LABD_TIMEOUT_MS, 12 _000, 1 _000, 60 _000)
+export const LABD_TIMEOUT_MS = clampInt(process.env.LABD_TIMEOUT_MS, 12000, 1000, 60000)
 
 // How many analyses may be started per IP per window. Each call spends part of
 // the shared monthly labd allowance, so an unmetered endpoint is one anyone can
 // drain. See middleware/rateLimit.js.
-export const ANALYZE_RATE_LIMIT = clampInt(process.env.ANALYZE_RATE_LIMIT, 10, 1, 1 _000)
-export const ANALYZE_RATE_WINDOW_MS = clampInt(process.env.ANALYZE_RATE_WINDOW_MS, 10 * 60 _000, 1 _000, 24 * 60 * 60 _000)
+export const ANALYZE_RATE_LIMIT = clampInt(process.env.ANALYZE_RATE_LIMIT, 10, 1, 1000)
+export const ANALYZE_RATE_WINDOW_MS = clampInt(process.env.ANALYZE_RATE_WINDOW_MS, 600000, 1000, 86400000)
