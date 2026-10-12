@@ -53,10 +53,10 @@ export default function ScoreCard({ result: { score, present, missing, fileName 
         </div>
         <div className="result-summary">
           <h2>Resume score</h2>
-          <p className="result-file">{fileName} · mock analysis</p>
+          <p className="result-file">{fileName} · keyword analysis</p>
           <p className="verdict">{text}</p>
           <p className="demo-note">
-            Mock result — generated in the browser so the demo runs without a backend.
+            Scored by matching the keywords in your job description against the text of your resume.
           </p>
         </div>
       </div>

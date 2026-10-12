@@ -40,7 +40,7 @@ export default function App() {
       </main>
       <footer className="footer">
         <div className="container">
-          <p>0 → Shipped · Resume Parser — mock build, no backend required.</p>
+          <p>0 → Shipped · Resume Parser — React frontend, Express + MongoDB backend.</p>
         </div>
       </footer>
     </>

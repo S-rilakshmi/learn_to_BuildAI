@@ -118,6 +118,38 @@
 }
 
 
+/* ---------- job description ---------- */
+
+.jd-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.jd-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.jd-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d8d8e6;
+    border-radius: 10px;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    background: #fff;
+}
+
+.jd-input:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+
+
 /* ---------- results ---------- */
 
 .results-section {

@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react'
-import mockParse from '../lib/mockParse.js'
+import { analyzeResume } from '../lib/api.js'
 
 export default function UploadCard({ onAnalyzed }) {
   const [file, setFile] = useState(null)
+  const [jobDescription, setJobDescription] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
   const fileInputRef = useRef(null)
@@ -22,10 +23,18 @@ export default function UploadCard({ onAnalyzed }) {
   async function analyze() {
     if (!file || busy) return
     setBusy(true)
-    // Fake parsing delay so the loading state is visible.
-    await new Promise((resolve) => setTimeout(resolve, 1100))
-    onAnalyzed({ ...mockParse(file.name), fileName: file.name })
-    setBusy(false)
+    setError('')
+    try {
+      // The PDF and the JD go to the Express server, which reads the text out
+      // of the PDF, compares it with the JD and stores the result in Mongo.
+      const result = await analyzeResume(file, jobDescription)
+      onAnalyzed(result)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setBusy(false)
+    }
+
   }
 
   return (
@@ -76,8 +85,19 @@ export default function UploadCard({ onAnalyzed }) {
                 browse files
               </button>
             </p>
-            <p className="dz-hint">PDF only · demo data, nothing is uploaded</p>
+            <p className="dz-hint">PDF only · up to 5 MB · text-based PDFs</p>
           </div>
+
+          <label className="jd-field">
+            <span className="jd-label">Paste the job description</span>
+            <textarea
+              className="jd-input"
+              rows={7}
+              placeholder="Paste the JD you're targeting — the score compares your resume against this text."
+              value={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
+            />
+          </label>
 
           {file && (
             <p className="file-note">
@@ -92,7 +112,7 @@ export default function UploadCard({ onAnalyzed }) {
           <button
             type="button"
             className="btn btn-primary"
-            disabled={!file || busy}
+            disabled={!file || !jobDescription.trim() || busy}
             onClick={analyze}
           >
             {busy ? 'Analyzing…' : 'Analyze resume'}

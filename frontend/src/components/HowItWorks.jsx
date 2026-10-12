@@ -7,12 +7,12 @@ export default function HowItWorks() {
           <div className="card step">
             <span className="step-num">1</span>
             <h3>Upload a PDF</h3>
-            <p>Drag and drop or browse. In this mock, nothing leaves your browser.</p>
+            <p>Drag and drop or browse, then paste the job description. Nothing is stored until you hit Analyze.</p>
           </div>
           <div className="card step">
             <span className="step-num">2</span>
             <h3>Skills get extracted</h3>
-            <p>In the real build, a parser reads the PDF text and matches it against a skill list.</p>
+            <p>The server pulls the text out of the PDF and matches it against the keywords in your JD.</p>
           </div>
           <div className="card step">
             <span className="step-num">3</span>
