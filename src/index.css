@@ -1,0 +1,156 @@
+/* ---------- design system / base ---------- */
+
+:root {
+    --ink: #17171f;
+    --muted: #6b6b7a;
+    --accent: #4f46e5;
+    --accent-strong: #4338ca;
+    --bg: #f6f6fa;
+    --card: #ffffff;
+    --border: #e5e5ef;
+    --good-bg: #e8f7ee;
+    --good-ink: #15803d;
+    --bad-bg: #fdeaea;
+    --bad-ink: #b91c1c;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+}
+
+.container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(23, 23, 31, 0.05);
+}
+
+
+/* Anchored sections don't hide under the nav when linked to. */
+
+#upload,
+#results,
+#how {
+    scroll-margin-top: 72px;
+}
+
+
+/* ---------- buttons ---------- */
+
+.btn {
+    display: inline-block;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s ease;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--accent-strong);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+/* ---------- nav ---------- */
+
+.nav {
+    padding: 18px 0;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+}
+
+.nav-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.logo .arrow {
+    color: var(--accent);
+}
+
+.nav nav {
+    display: flex;
+    gap: 20px;
+}
+
+.nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.nav a:hover {
+    color: var(--ink);
+}
+
+
+/* ---------- footer ---------- */
+
+.footer {
+    border-top: 1px solid var(--border);
+    background: var(--card);
+    padding: 24px 0;
+    margin-top: auto;
+}
+
+.footer p {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+
+/* The app fills the viewport so the footer sits at the bottom
+   even on short pages. */
+
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#root>main {
+    flex: 1;
+}

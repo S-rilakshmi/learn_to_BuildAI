@@ -1,138 +1,17 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>0 → Shipped · Resume Parser</title>
-    <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-    <header class="nav">
-        <div class="container nav-inner">
-            <a class="logo" href="#top">0 <span class="arrow">→</span> Shipped</a>
-            <nav>
-                <a href="#upload">Try it</a>
-                <a href="#how">How it works</a>
-            </nav>
-        </div>
-    </header>
-
-    <main id="top">
-        <!-- Hero -->
-        <section class="hero">
-            <div class="container">
-                <p class="eyebrow">Mock demo · no backend</p>
-                <h1>Know what your resume signals <span class="accent">before you send it</span></h1>
-                <p class="sub">
-                    Upload a PDF and get a score out of 100, the skills it found, and the ones it's missing. This page is a mock build — the real parsing logic plugs in later.
-                </p>
-                <a class="btn btn-primary" href="#upload">Upload a resume</a>
-            </div>
-        </section>
-
-        <!-- Upload -->
-        <section id="upload" class="upload-section">
-            <div class="container">
-                <div class="card upload-card">
-                    <input type="file" id="file-input" accept="application/pdf,.pdf" hidden />
-
-                    <div id="dropzone" class="dropzone" role="button" tabindex="0" aria-label="Upload resume PDF">
-                        <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-              <path d="M12 16V4m0 0l-4 4m4-4l4 4" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M4 15v3a2 2 0 002 2h12a2 2 0 002-2v-3" stroke-linecap="round"/>
-            </svg>
-                        <p class="dz-title">Drag &amp; drop your resume PDF</p>
-                        <p class="dz-sub">or <button type="button" class="link-btn" id="browse-btn">browse files</button></p>
-                        <p class="dz-hint">PDF only · demo data, nothing is uploaded</p>
-                    </div>
-
-                    <p id="file-note" class="file-note" hidden></p>
-                    <p id="error-note" class="error-note" hidden></p>
-
-                    <button type="button" id="analyze-btn" class="btn btn-primary" disabled>Analyze resume</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Results -->
-        <section id="results-section" class="results-section" hidden>
-            <div class="container">
-                <div class="card results-card" aria-live="polite">
-
-                    <div id="loading" class="loading" hidden>
-                        <div class="spinner"></div>
-                        <p>Parsing <span id="loading-file"></span>…</p>
-                    </div>
-
-                    <div id="result" hidden>
-                        <div class="result-head">
-                            <div class="ring-wrap">
-                                <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
-                  <circle class="ring-track" cx="60" cy="60" r="52"></circle>
-                  <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="52"></circle>
-                </svg>
-                                <div class="ring-label">
-                                    <span id="score-number">0</span><span class="ring-max">/100</span>
-                                </div>
-                            </div>
-                            <div class="result-summary">
-                                <h2>Resume score</h2>
-                                <p id="result-file" class="result-file"></p>
-                                <p id="verdict" class="verdict"></p>
-                                <p class="demo-note">Mock result — generated in the browser so the demo runs without a backend.</p>
-                            </div>
-                        </div>
-
-                        <div class="skills-grid">
-                            <div class="skills-col">
-                                <h3>Present skills <span id="present-count" class="count"></span></h3>
-                                <ul id="present-list" class="chips"></ul>
-                            </div>
-                            <div class="skills-col">
-                                <h3>Missing skills <span id="missing-count" class="count"></span></h3>
-                                <ul id="missing-list" class="chips"></ul>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- How it works -->
-        <section id="how" class="how-section">
-            <div class="container">
-                <h2>How it works</h2>
-                <div class="how-grid">
-                    <div class="card step">
-                        <span class="step-num">1</span>
-                        <h3>Upload a PDF</h3>
-                        <p>Drag and drop or browse. In this mock, nothing leaves your browser.</p>
-                    </div>
-                    <div class="card step">
-                        <span class="step-num">2</span>
-                        <h3>Skills get extracted</h3>
-                        <p>In the real build, a parser reads the PDF text and matches it against a skill list.</p>
-                    </div>
-                    <div class="card step">
-                        <span class="step-num">3</span>
-                        <h3>See score and gaps</h3>
-                        <p>A score out of 100, the skills present, and the skills missing — at a glance.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <div class="container">
-            <p>0 → Shipped · Resume Parser — mock build, no backend required.</p>
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
+    <!-- Vite injects the React app here; the script tag below is the
+         entry point, transformed and bundled at build time. -->
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
 </body>
 
 </html>
